@@ -77,13 +77,19 @@ for i in range(num_customers):
 
 # 6. Calculate performace ratings
 
+# Average waiting time - the average time customers spend in the queue before service begins
 average_waiting_time = sum(waiting_times) / num_customers
+
+# Average time in system - the total time from arrival to departure
 average_time_in_system = sum(time_in_system) / num_customers
 
 total_busy_time = sum(service_times)
 total_simulation_time = departure_times[-1] - arrival_times[0]
+
+# Server utilization - the proportion of time the cashier is actively serving customers
 utilization = total_busy_time / total_simulation_time
 
+# Throughput - the number of customers served per unit time
 throughput = num_customers / total_simulation_time
 
 
@@ -95,7 +101,7 @@ print("-------------------------------------------------------------------------
 print("Customer # | Interarrival Time | Arrival Time | Service Time | Start Time | Depart Time | Wait Time | Time in System")
 
 for i in range(num_customers):
-    print(
+    print{
         f"{i+1:>4} |"
         f"{interarrival_times[i]:>13} |"
         f"{arrival_times[i]:>8} |"
@@ -104,7 +110,7 @@ for i in range(num_customers):
         f"{departure_times[i]:>7} |"
         f"{waiting_times[i]:>5} |"
         f"{time_in_system[i]:>14}"
-    )
+    }
 
 
 
