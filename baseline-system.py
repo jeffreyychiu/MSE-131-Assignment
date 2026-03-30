@@ -74,3 +74,21 @@ utilization = total_busy_time / total_simulation_time
 
 throughput = num_customers / total_simulation_time
 
+
+# 7. Print customer results
+
+print("Customer Data")
+print("----------------------------------------------------------------------------------------------------------")
+print("Customer # | Interarrival Time | Arrival Time | Service Time | Start Time | Depart Time | Wait Time | Time in System")
+
+for i in range(num_customers):
+    print(
+        f"{i+1:>4} |"
+        f"{interarrival_times[i]:>13} |"
+        f"{arrival_times[i]:>8} |"
+        f"{service_times[i]:>8} |"
+        f"{service_start_times[i]:>6} |"
+        f"{departure_times[i]:>7} |"
+        f"{waiting_times[i]:>5} |"
+        f"{time_in_system[i]:>14}"
+    )
