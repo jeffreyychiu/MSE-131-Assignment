@@ -101,7 +101,7 @@ print("-------------------------------------------------------------------------
 print("Customer # | Interarrival Time | Arrival Time | Service Time | Start Time | Depart Time | Wait Time | Time in System")
 
 for i in range(num_customers):
-    print{
+    print(
         f"{i+1:>4} |"
         f"{interarrival_times[i]:>13} |"
         f"{arrival_times[i]:>8} |"
@@ -110,7 +110,7 @@ for i in range(num_customers):
         f"{departure_times[i]:>7} |"
         f"{waiting_times[i]:>5} |"
         f"{time_in_system[i]:>14}"
-    }
+    )
 
 
 
