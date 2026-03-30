@@ -1,5 +1,12 @@
 import random
 
+# This program simulates a coffee shop checkout system using a single cashier and a single waiting line. 
+# Customers arrive at random times and require random service times, creating variability in the system. 
+# The model tracks each customer's arrival time, service start time, and departure time to calculate waiting times and overall system performance.
+# The key performance measures of this system includes average waiting time, time in system, server utilization, and throughput.
+# This baseline model provides a simple representation of the application of real-world service system operates and serves as a foundation for further analysis and extensions. 
+
+
 # 1. Model set up
 
 num_customers = 20   # number of customers to simulate
@@ -14,6 +21,7 @@ waiting_times = []
 time_in_system = []
 
 
+
 # 2. Generate service and arrival times
 
 for i in range(num_customers):
@@ -26,6 +34,7 @@ for i in range(num_customers):
     service_times.append(service)
 
 
+
 # 3. Calculate arrival times
 
 for i in range(num_customers):
@@ -33,6 +42,7 @@ for i in range(num_customers):
         arrival_times.append(interarrival_times[i])
     else:
         arrival_times.append(arrival_times[i - 1] + interarrival_times[i])
+
 
 
 # 4. Calculate service start times and departure times
@@ -53,6 +63,7 @@ for i in range(num_customers):
     departure_times.append(finish_time)
 
 
+
 # 5. Calculate waiting time and time in system
 
 for i in range(num_customers):
@@ -61,6 +72,7 @@ for i in range(num_customers):
 
     total_time = departure_times[i] - arrival_times[i]
     time_in_system.append(total_time)
+
 
 
 # 6. Calculate performace ratings
@@ -73,6 +85,7 @@ total_simulation_time = departure_times[-1] - arrival_times[0]
 utilization = total_busy_time / total_simulation_time
 
 throughput = num_customers / total_simulation_time
+
 
 
 # 7. Print customer results
@@ -92,3 +105,14 @@ for i in range(num_customers):
         f"{waiting_times[i]:>5} |"
         f"{time_in_system[i]:>14}"
     )
+
+
+
+# 8. Print summary results
+
+print("\nSummary Performance Measures")
+print("-----------------------------------")
+print("Average waiting time:", round(average_waiting_time, 2), "minutes")
+print("Average time in system:", round(average_time_in_system, 2), "minutes")
+print("Server utilization:", round(utilization, 2))
+print("Throughput:", round(throughput, 2), "customers per minute")
