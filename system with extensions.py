@@ -83,22 +83,122 @@ for i in range(num_customers):
 
 
 # 4. Simulation
+cashier1_available = 0
+cashier2_available = 0
+
+served = [False] * num_customers
+balked = [False] * num_customers
+reneged = [False] * num_customers
+
+assigned_cashier = [None] * num_customers
+
+for i in range(num_customers):
+
+    arrival = arrival_times[i]
+
+    # Count how many people are still waiting (simple approximation)
+    queue_length = 0
+    for j in range(i):
+        if not served[j] and not balked[j] and not reneged[j]:
+            queue_length += 1
+
+
+    # Extension 5:
+
+    if queue_length > max_queue_length:
+        balked[i] = True
+        service_start_times.append(None)
+        departure_times.append(None)
+        waiting_times.append(None)
+        time_in_system.append(None)
+        assigned_cashier[i] = None
+        continue
+
+    if wait > max_wait_time:
+        reneged[i] = True
+        service_start_times.append(None)
+        departure_times.append(None)
+        waiting_times.append(wait)
+        time_in_system.append(None)
+        assigned_cashier[i] = None
+        continue
+
+    # Choose cashier (with breaks)
+
+    # Handle cashier 2 break
+    if break_start <= arrival <= break_end:
+        cashier2_available = max(cashier2_available, break_end)
+
+    # Choose the cashier with earlier availability
+    if cashier1_available <= cashier2_available:
+        start_time = max(arrival, cashier1_available)
+        cashier = 1
+    else:
+        start_time = max(arrival, cashier2_available)
+        cashier = 2
+
+    wait = start_time - arrival
+
+
+    # Serve customer
+    finish = start_time + service_times[i]
+
+    service_start_times.append(start_time)
+    departure_times.append(finish)
+    waiting_times.append(wait)
+    time_in_system.append(finish - arrival)
+    assigned_cashier[i] = cashier
+    served[i] = True
+
+    # Update cashier availability
+    if cashier == 1:
+        cashier1_available = finish
+    else:
+        cashier2_available = finish
 
 
 
-# 5. Output results into lists
+# 5. Calculate performace ratings
+
+served_count = 0
+total_wait = 0
+total_time_system = 0
+busy_time_1 = 0
+busy_time_2 = 0
+
+for i in range(num_customers):
+    if served[i]:
+        served_count += 1
+        total_wait += waiting_times[i]
+        total_time_system += time_in_system[i]
+
+        if assigned_cashier[i] == 1:
+            busy_time_1 += service_times[i]
+        elif assigned_cashier[i] == 2:
+            busy_time_2 += service_times[i]
+
+if served_count > 0:
+    average_waiting_time = total_wait / served_count
+    average_time_in_system = total_time_system / served_count
+
+    total_simulation_time = max([t for t in departure_times if t is not None]) - min(arrival_times)
+
+    utilization_cashier1 = busy_time_1 / total_simulation_time
+    utilization_cashier2 = busy_time_2 / total_simulation_time
+    overall_utilization = (busy_time_1 + busy_time_2) / (2 * total_simulation_time)
+
+    throughput = served_count / total_simulation_time
+else:
+    average_waiting_time = 0
+    average_time_in_system = 0
+    utilization_cashier1 = 0
+    utilization_cashier2 = 0
+    overall_utilization = 0
+    throughput = 0
 
 
 
-
-
-# 6. Calculate performace ratings
-
-
-
-
-
-# 7. Print customer results
+# 6. Print customer results
 
 print("Customer Data")
 print("-" * 160)
@@ -127,7 +227,7 @@ for i in range(len(results)):
     )
 
 
-# 8. Print summary results
+# 7. Print summary results
 
 print("\nSummary Performance Measures")
 print("-" * 45)
