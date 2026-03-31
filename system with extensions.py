@@ -37,7 +37,7 @@ time_in_system = []
 
 
 
-# 2. Generate service and arrival times
+# 2. Generate arrival times and customer types
 
 current_time = 0
 
@@ -68,90 +68,75 @@ for i in range(num_customers):
     customer_types.append(cust_type)
 
 
-# 3. Calculate arrival times
+# 3. Sort customers by arrival times
 
+customers = []
 for i in range(num_customers):
-    if i == 0:
-        arrival_times.append(interarrival_times[i])
-    else:
-        arrival_times.append(arrival_times[i - 1] + interarrival_times[i])
+    customers.append({
+        "customer_number": customer_numbers[i],
+        "type": customer_types[i],
+        "interarrival": interarrival_times[i],
+        "arrival": arrival_times[i],
+        "service": service_times[i]
+    })
 
 
 
-# 4. Calculate service start times and departure times
-
-for i in range(num_customers):
-    if i == 0:
-        # First customer starts service as soon as they arrive
-        start_time = arrival_times[i]
-    else:
-        # Customer starts service either when they arrive
-        # or when the previous customer leaves
-        start_time = max(arrival_times[i], departure_times[i - 1])
-
-    service_start_times.append(start_time)
-
-    # Departure time = service start + service time
-    finish_time = start_time + service_times[i]
-    departure_times.append(finish_time)
+# 4. Simulation
 
 
 
-# 5. Calculate waiting time and time in system
+# 5. Output results into lists
 
-for i in range(num_customers):
-    wait = service_start_times[i] - arrival_times[i]
-    waiting_times.append(wait)
 
-    total_time = departure_times[i] - arrival_times[i]
-    time_in_system.append(total_time)
 
 
 
 # 6. Calculate performace ratings
 
-# Average waiting time - the average time customers spend in the queue before service begins
-average_waiting_time = sum(waiting_times) / num_customers
 
-# Average time in system - the total time from arrival to departure
-average_time_in_system = sum(time_in_system) / num_customers
-
-total_busy_time = sum(service_times)
-total_simulation_time = departure_times[-1] - arrival_times[0]
-
-# Server utilization - the proportion of time the cashier is actively serving customers
-utilization = total_busy_time / total_simulation_time
-
-# Throughput - the number of customers served per unit time
-throughput = num_customers / total_simulation_time
 
 
 
 # 7. Print customer results
 
 print("Customer Data")
-print("-" * 120)
-print("Customer # | Interarrival Time | Arrival Time | Service Time | Start Time | Depart Time | Wait Time | Time in System")
-print("-" * 120)
+print("-" * 160)
+print("Customer # | Type      | Interarrival Time | Arrival Time | Service Time | Start Time | Depart Time | Wait Time | Time in System | Status   | Cashier")
+print("-" * 160)
 
-for i in range(num_customers):
+for i in range(len(results)):
+    start_val = service_start_times[i] if service_start_times[i] is not None else "-"
+    depart_val = departure_times[i] if departure_times[i] is not None else "-"
+    wait_val = waiting_times[i] if waiting_times[i] is not None else "-"
+    system_val = time_in_system[i] if time_in_system[i] is not None else "-"
+    cashier_val = assigned_cashier[i] if assigned_cashier[i] is not None else "-"
+
     print(
-        f"{i+1:>10} | "
+        f"{customer_numbers[i]:>10} | "
+        f"{customer_types[i]:<9} | "
         f"{interarrival_times[i]:>17} | "
         f"{arrival_times[i]:>12} | "
         f"{service_times[i]:>12} | "
-        f"{service_start_times[i]:>10} | "
-        f"{departure_times[i]:>11} | "
-        f"{waiting_times[i]:>9} | "
-        f"{time_in_system[i]:>15}"
+        f"{str(start_val):>10} | "
+        f"{str(depart_val):>11} | "
+        f"{str(wait_val):>9} | "
+        f"{str(system_val):>14} | "
+        f"{customer_status[i]:<8} | "
+        f"{str(cashier_val):>7}"
     )
 
 
 # 8. Print summary results
 
 print("\nSummary Performance Measures")
-print("-----------------------------------")
+print("-" * 45)
+print("Customers served:", len(served_customers))
+print("Customers who balked:", len(balked_customers))
+print("Customers who reneged:", len(reneged_customers))
 print("Average waiting time:", round(average_waiting_time, 2), "minutes")
 print("Average time in system:", round(average_time_in_system, 2), "minutes")
-print("Server utilization:", round(utilization, 2))
+print("Cashier 1 utilization:", round(utilization_cashier1, 2))
+print("Cashier 2 utilization:", round(utilization_cashier2, 2))
+print("Overall system utilization:", round(overall_utilization, 2))
 print("Throughput:", round(throughput, 2), "customers per minute")
