@@ -1,17 +1,30 @@
 import random
 
-# This program simulates a coffee shop checkout system using a single cashier and a single waiting line. 
-# This system was completed after the five extensions of: Rush-Hour Arrivals (Demand Variation), Second Cashier (Increased Capacity)
-# Worker Break (Reduced Capacity), Mobile Orders (Priority Rules),  were added.
-# Customers arrive at random times and require random service times, creating variability in the system. 
-# The model tracks each customer's arrival time, service start time, and departure time to calculate waiting times and overall system performance.
-# The key performance measures of this system includes average waiting time, time in system, server utilization, and throughput.
-# This baseline model provides a simple representation of the application of real-world service system operates and serves as a foundation for further analysis and extensions. 
+# This program simulates a coffee shop checkout system with five extensions:
+# 1. Rush-Hour Arrivals (Demand Variation)
+# 2. Second Cashier (Increased Capacity)
+# 3. Worker Break (Temporary Reduced Capacity)
+# 4. Mobile Orders (Priority Rules)
+# 5. Customer Abandonment (Customer Response to Congestion)
+
+# Customers arrive at different rates depending on the time of day.
+# Some customers are mobile-order customers and receive priority service.
+# Two cashiers are available, but one cashier takes a break during a set time interval.
+# Customers may choose not to join the line if it is too long, or leave if they wait too long.
+# The model tracks waiting time, time in system, throughput, and cashier utilization.
 
 
 # 1. Model set up
 
-num_customers = 20   # number of customers to simulate
+num_customers = 30  # number of customers to simulate
+
+# Break settings for cashier 2
+break_start = 20
+break_end = 35
+
+# Abandonment settings
+max_queue_length = 5       # if queue is longer than this, customer will not join
+max_wait_time = 8          # if wait is longer than this, customer leaves
 
 # Lists to store data for each customer
 interarrival_times = []
@@ -26,15 +39,33 @@ time_in_system = []
 
 # 2. Generate service and arrival times
 
+current_time = 0
+
 for i in range(num_customers):
-    # Random time between arrivals: 1 to 5 minutes intervals
-    interarrival = random.randint(1, 5)
-    interarrival_times.append(interarrival)
+    # Rush-hour arrivals:
+    # If current time is during rush hour, customers arrive faster
+    if 15 <= current_time <= 40:
+        interarrival = random.randint(1, 2)   # to simulate busy period
+    else:
+        interarrival = random.randint(3, 5)   # to simulate off-peak period
 
-    # Random service time: 2 to 6 minutes intervals
+    current_time += interarrival
+
+    # Random service time
     service = random.randint(2, 6)
-    service_times.append(service)
 
+    # Mobile order customers (priority customers)
+    # Assume 30% chance customer is a mobile-order pickup
+    if random.random() < 0.3:
+        cust_type = "Priority"
+    else:
+        cust_type = "Regular"
+
+    customer_numbers.append(i + 1)
+    interarrival_times.append(interarrival)
+    arrival_times.append(current_time)
+    service_times.append(service)
+    customer_types.append(cust_type)
 
 
 # 3. Calculate arrival times
