@@ -1,6 +1,7 @@
 import random
 
 # This program simulates a coffee shop checkout system using a single cashier and a single waiting line. 
+# This system was completed before any of the five extensions were added.
 # Customers arrive at random times and require random service times, creating variability in the system. 
 # The model tracks each customer's arrival time, service start time, and departure time to calculate waiting times and overall system performance.
 # The key performance measures of this system includes average waiting time, time in system, server utilization, and throughput.
