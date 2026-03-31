@@ -1,6 +1,6 @@
 import random
 
-# This program simulates a coffee shop checkout system with five extensions:
+# This program simulates a bubble tea shop checkout system with five extensions:
 # 1. Rush-Hour Arrivals (Demand Variation)
 # 2. Second Cashier (Increased Capacity)
 # 3. Worker Break (Temporary Reduced Capacity)
@@ -13,20 +13,23 @@ import random
 # Customers may choose not to join the line if it is too long, or leave if they wait too long.
 # The model tracks waiting time, time in system, throughput, and cashier utilization.
 
+import random
 
 # 1. Model set up
 
-num_customers = 30  # number of customers to simulate
+num_customers = 30
 
 # Break settings for cashier 2
 break_start = 20
 break_end = 35
 
 # Abandonment settings
-max_queue_length = 5       # if queue is longer than this, customer will not join
-max_wait_time = 8          # if wait is longer than this, customer leaves
+max_queue_length = 5
+max_wait_time = 8
 
 # Lists to store data for each customer
+customer_numbers = []
+customer_types = []
 interarrival_times = []
 arrival_times = []
 service_times = []
@@ -34,28 +37,23 @@ service_start_times = []
 departure_times = []
 waiting_times = []
 time_in_system = []
-
-
+customer_status = []
 
 # 2. Generate arrival times and customer types
 
 current_time = 0
 
 for i in range(num_customers):
-    # Rush-hour arrivals:
-    # If current time is during rush hour, customers arrive faster
+    # Rush-hour arrivals
     if 15 <= current_time <= 40:
-        interarrival = random.randint(1, 2)   # to simulate busy period
+        interarrival = random.randint(1, 2)
     else:
-        interarrival = random.randint(3, 5)   # to simulate off-peak period
+        interarrival = random.randint(3, 5)
 
     current_time += interarrival
 
-    # Random service time
     service = random.randint(2, 6)
 
-    # Mobile order customers (priority customers)
-    # Assume 30% chance customer is a mobile-order pickup
     if random.random() < 0.3:
         cust_type = "Priority"
     else:
@@ -67,44 +65,27 @@ for i in range(num_customers):
     service_times.append(service)
     customer_types.append(cust_type)
 
+# 3. Simulation
 
-# 3. Sort customers by arrival times
-
-customers = []
-for i in range(num_customers):
-    customers.append({
-        "customer_number": customer_numbers[i],
-        "type": customer_types[i],
-        "interarrival": interarrival_times[i],
-        "arrival": arrival_times[i],
-        "service": service_times[i]
-    })
-
-
-
-# 4. Simulation
 cashier1_available = 0
 cashier2_available = 0
 
 served = [False] * num_customers
 balked = [False] * num_customers
 reneged = [False] * num_customers
-
 assigned_cashier = [None] * num_customers
 
 for i in range(num_customers):
 
     arrival = arrival_times[i]
 
-    # Count how many people are still waiting (simple approximation)
+    # Count how many earlier customers are still not completed
     queue_length = 0
     for j in range(i):
         if not served[j] and not balked[j] and not reneged[j]:
             queue_length += 1
 
-
-    # Extension 5:
-
+    # Extension 5: Balking
     if queue_length > max_queue_length:
         balked[i] = True
         service_start_times.append(None)
@@ -112,24 +93,14 @@ for i in range(num_customers):
         waiting_times.append(None)
         time_in_system.append(None)
         assigned_cashier[i] = None
+        customer_status.append("Balked")
         continue
-
-    if wait > max_wait_time:
-        reneged[i] = True
-        service_start_times.append(None)
-        departure_times.append(None)
-        waiting_times.append(wait)
-        time_in_system.append(None)
-        assigned_cashier[i] = None
-        continue
-
-    # Choose cashier (with breaks)
 
     # Handle cashier 2 break
     if break_start <= arrival <= break_end:
         cashier2_available = max(cashier2_available, break_end)
 
-    # Choose the cashier with earlier availability
+    # Choose cashier with earlier availability
     if cashier1_available <= cashier2_available:
         start_time = max(arrival, cashier1_available)
         cashier = 1
@@ -139,6 +110,16 @@ for i in range(num_customers):
 
     wait = start_time - arrival
 
+    # Extension 5: Reneging
+    if wait > max_wait_time:
+        reneged[i] = True
+        service_start_times.append(None)
+        departure_times.append(None)
+        waiting_times.append(wait)
+        time_in_system.append(None)
+        assigned_cashier[i] = None
+        customer_status.append("Reneged")
+        continue
 
     # Serve customer
     finish = start_time + service_times[i]
@@ -149,6 +130,7 @@ for i in range(num_customers):
     time_in_system.append(finish - arrival)
     assigned_cashier[i] = cashier
     served[i] = True
+    customer_status.append("Served")
 
     # Update cashier availability
     if cashier == 1:
@@ -156,11 +138,11 @@ for i in range(num_customers):
     else:
         cashier2_available = finish
 
-
-
-# 5. Calculate performace ratings
+# 4. Calculate performance ratings
 
 served_count = 0
+balked_count = 0
+reneged_count = 0
 total_wait = 0
 total_time_system = 0
 busy_time_1 = 0
@@ -177,11 +159,22 @@ for i in range(num_customers):
         elif assigned_cashier[i] == 2:
             busy_time_2 += service_times[i]
 
+    elif balked[i]:
+        balked_count += 1
+
+    elif reneged[i]:
+        reneged_count += 1
+
 if served_count > 0:
     average_waiting_time = total_wait / served_count
     average_time_in_system = total_time_system / served_count
 
-    total_simulation_time = max([t for t in departure_times if t is not None]) - min(arrival_times)
+    valid_departures = []
+    for t in departure_times:
+        if t is not None:
+            valid_departures.append(t)
+
+    total_simulation_time = max(valid_departures) - min(arrival_times)
 
     utilization_cashier1 = busy_time_1 / total_simulation_time
     utilization_cashier2 = busy_time_2 / total_simulation_time
@@ -196,16 +189,14 @@ else:
     overall_utilization = 0
     throughput = 0
 
-
-
-# 6. Print customer results
+# 5. Print customer results
 
 print("Customer Data")
 print("-" * 160)
 print("Customer # | Type      | Interarrival Time | Arrival Time | Service Time | Start Time | Depart Time | Wait Time | Time in System | Status   | Cashier")
 print("-" * 160)
 
-for i in range(len(results)):
+for i in range(num_customers):
     start_val = service_start_times[i] if service_start_times[i] is not None else "-"
     depart_val = departure_times[i] if departure_times[i] is not None else "-"
     wait_val = waiting_times[i] if waiting_times[i] is not None else "-"
@@ -226,14 +217,13 @@ for i in range(len(results)):
         f"{str(cashier_val):>7}"
     )
 
-
-# 7. Print summary results
+# 6. Print summary results
 
 print("\nSummary Performance Measures")
 print("-" * 45)
-print("Customers served:", len(served_customers))
-print("Customers who balked:", len(balked_customers))
-print("Customers who reneged:", len(reneged_customers))
+print("Customers served:", served_count)
+print("Customers who balked:", balked_count)
+print("Customers who reneged:", reneged_count)
 print("Average waiting time:", round(average_waiting_time, 2), "minutes")
 print("Average time in system:", round(average_time_in_system, 2), "minutes")
 print("Cashier 1 utilization:", round(utilization_cashier1, 2))

@@ -1,6 +1,6 @@
 import random
 
-# This program simulates a coffee shop checkout system using a single cashier and a single waiting line. 
+# This program simulates a bubble tea shop checkout system using a single cashier and a single waiting line. 
 # This system was completed before any of the five extensions were added.
 # Customers arrive at random times and require random service times, creating variability in the system. 
 # The model tracks each customer's arrival time, service start time, and departure time to calculate waiting times and overall system performance.
