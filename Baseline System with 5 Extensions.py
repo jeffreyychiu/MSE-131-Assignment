@@ -43,16 +43,13 @@ customer_status = []
 
 # 2. Generate arrival times and customer types
 
-priority_rate = 0.85  # number to be changed for different scenarios
+priority_rate = 0.35  # number to be changed for different scenarios
 
 current_time = 0
 
 for i in range(num_customers):
-    # Rush-hour arrivals
-    if 15 <= current_time <= 40:
-        interarrival = random.randint(1, 3)
-    else:
-        interarrival = random.randint(2, 4)
+    # Rush-hour arrival demands
+    interarrival = random.randint(2, 4)
 
     current_time += interarrival
 
