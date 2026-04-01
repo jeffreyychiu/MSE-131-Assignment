@@ -43,13 +43,13 @@ customer_status = []
 
 # 2. Generate arrival times and customer types
 
-priority_rate = 0.35  # number to be changed for different scenarios
+priority_rate = 0.35  # number to be changed for different scenarios 
 
 current_time = 0
 
 for i in range(num_customers):
     # Rush-hour arrival demands
-    interarrival = random.randint(2, 4)
+    interarrival = random.randint(2, 4) #  (medium demand parameter)
 
     current_time += interarrival
 
@@ -59,7 +59,7 @@ for i in range(num_customers):
     else:
         cust_type = "Regular"
 
-    # Service time depends on customer type
+    # Service time depends on customer type (medium service parameter)
     if cust_type == "Priority":
         service = random.randint(1, 4)   # faster mobile pickup process time
     else:
