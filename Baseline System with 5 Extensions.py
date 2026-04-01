@@ -19,8 +19,7 @@ import random
 
 # 1. Model set up
 
-priority_rate = 0.35
-num_customers = 30
+num_customers = 100
 
 # Break settings for cashier 2
 break_start = 20
@@ -44,23 +43,30 @@ customer_status = []
 
 # 2. Generate arrival times and customer types
 
+priority_rate = 0.85  # number to be changed for different scenarios
+
 current_time = 0
 
 for i in range(num_customers):
     # Rush-hour arrivals
     if 15 <= current_time <= 40:
-        interarrival = random.randint(1, 2)
+        interarrival = random.randint(1, 3)
     else:
-        interarrival = random.randint(3, 5)
+        interarrival = random.randint(2, 4)
 
     current_time += interarrival
 
-    service = random.randint(2, 6)
-
+    # Customer type
     if random.random() < priority_rate:
         cust_type = "Priority"
     else:
         cust_type = "Regular"
+
+    # Service time depends on customer type
+    if cust_type == "Priority":
+        service = random.randint(1, 4)   # faster mobile pickup process time
+    else:
+        service = random.randint(6, 10)   # regular walk-in order process time
 
     customer_numbers.append(i + 1)
     interarrival_times.append(interarrival)
