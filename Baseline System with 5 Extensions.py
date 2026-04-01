@@ -1,5 +1,7 @@
 import random
 
+# ** Terminal must be fully extended in order to see the baseline system in the correct formatting**
+
 # This program simulates a bubble tea shop checkout system with five extensions:
 # 1. Rush-Hour Arrivals (Demand Variation)
 # 2. Second Cashier (Increased Capacity)
@@ -17,6 +19,7 @@ import random
 
 # 1. Model set up
 
+priority_rate = 0.35
 num_customers = 30
 
 # Break settings for cashier 2
@@ -54,7 +57,7 @@ for i in range(num_customers):
 
     service = random.randint(2, 6)
 
-    if random.random() < 0.3:
+    if random.random() < priority_rate:
         cust_type = "Priority"
     else:
         cust_type = "Regular"
