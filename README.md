@@ -15,3 +15,4 @@ The model that has been programmed simulates customer flow by tracking each cust
 
 - Aggregate results are used to calculate overall performance measures 
 
+**Terminal must be in full size in order to fully see the table of generated values.**
