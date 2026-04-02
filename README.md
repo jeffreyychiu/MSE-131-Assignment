@@ -1,18 +1,6 @@
 # MSE-131-Assignment
 
-Model Logic:
-The model that has been programmed simulates customer flow by tracking each customer’s progression through the system:
+The baseline model represents a bubble-tea shop as a single-server waiting-line system consisting of one cashier and a single queue. The purpose of this model is to simulate the flow of customers through the system and evaluate its performance under typical operating conditions. As instructed by the assignment guidelines, this model is intentionally designed to remain simple and transparent while capturing the key operational dynamics of a service system.
 
-- Customer arrival times are generated based on random interarrival times
-
-- Each customer is assigned a random service time
-
-- The service start time is determined as the later of the customer’s arrival time or the previous customer’s completion time
-
-- The departure time is calculated as the sum of the service start time and the service time
-
-- Waiting time and total time are calculated as the sum of the service start time and service time
-
-- Aggregate results are used to calculate overall performance measures 
 
 **Terminal must be in full size in order to fully see the table of generated values.**
