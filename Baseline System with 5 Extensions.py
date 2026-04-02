@@ -2,6 +2,7 @@ import random
 
 # ** Terminal must be fully extended in order to see the baseline system in the correct formatting**
 
+# Bubble-Tea Shop System
 # This program simulates a bubble tea shop checkout system with five extensions:
 # 1. Rush-Hour Arrivals (Demand Variation)
 # 2. Second Cashier (Increased Capacity)
@@ -15,7 +16,9 @@ import random
 # Customers may choose not to join the line if it is too long, or leave if they wait too long.
 # The model tracks waiting time, time in system, throughput, and cashier utilization.
 
+
 import random
+
 
 # 1. Model set up
 
@@ -41,9 +44,10 @@ waiting_times = []
 time_in_system = []
 customer_status = []
 
+
 # 2. Generate arrival times and customer types
 
-priority_rate = 0.35  # number to be changed for different scenarios 
+priority_rate = 0.35  # number to be changed for different scenarios
 
 current_time = 0
 
@@ -70,6 +74,7 @@ for i in range(num_customers):
     arrival_times.append(current_time)
     service_times.append(service)
     customer_types.append(cust_type)
+
 
 # 3. Simulation
 
@@ -144,6 +149,7 @@ for i in range(num_customers):
     else:
         cashier2_available = finish
 
+
 # 4. Calculate performance ratings
 
 served_count = 0
@@ -182,9 +188,11 @@ if served_count > 0:
 
     total_simulation_time = max(valid_departures) - min(arrival_times)
 
+
     utilization_cashier1 = busy_time_1 / total_simulation_time
     utilization_cashier2 = busy_time_2 / total_simulation_time
     overall_utilization = (busy_time_1 + busy_time_2) / (2 * total_simulation_time)
+
 
     throughput = served_count / total_simulation_time
 else:
@@ -194,6 +202,7 @@ else:
     utilization_cashier2 = 0
     overall_utilization = 0
     throughput = 0
+
 
 # 5. Print customer results
 
@@ -222,6 +231,7 @@ for i in range(num_customers):
         f"{customer_status[i]:<8} | "
         f"{str(cashier_val):>7}"
     )
+
 
 # 6. Print summary results
 

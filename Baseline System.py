@@ -1,16 +1,17 @@
 import random
 
-# This program simulates a bubble tea shop checkout system using a single cashier and a single waiting line. 
+# Bubble-Tea Shop System
+# This program simulates a bubble tea shop checkout system using a single cashier and a single waiting line.
 # This system was completed before any of the five extensions were added.
-# Customers arrive at random times and require random service times, creating variability in the system. 
+# Customers arrive at random times and require random service times, creating variability in the system.
 # The model tracks each customer's arrival time, service start time, and departure time to calculate waiting times and overall system performance.
 # The key performance measures of this system includes average waiting time, time in system, server utilization, and throughput.
-# This baseline model provides a simple representation of the application of real-world service system operates and serves as a foundation for further analysis and extensions. 
+# This baseline model provides a simple representation of the application of real-world service system operates and serves as a foundation for further analysis and extensions.
 
 
 # 1. Model set up
 
-num_customers = 20   # number of customers to simulate
+num_customers = 100   # number of customers to simulate
 
 # Lists to store data for each customer
 interarrival_times = []
@@ -22,18 +23,16 @@ waiting_times = []
 time_in_system = []
 
 
-
 # 2. Generate service and arrival times
 
 for i in range(num_customers):
-    # Random time between arrivals: 1 to 5 minutes intervals
-    interarrival = random.randint(1, 5)
+    # Random time between arrivals: 2 to 6 minutes intervals
+    interarrival = random.randint(2, 6)
     interarrival_times.append(interarrival)
 
-    # Random service time: 2 to 6 minutes intervals
-    service = random.randint(2, 6)
+    # Random service time: 2 to 4 minutes intervals
+    service = random.randint(2, 4)
     service_times.append(service)
-
 
 
 # 3. Calculate arrival times
@@ -43,7 +42,6 @@ for i in range(num_customers):
         arrival_times.append(interarrival_times[i])
     else:
         arrival_times.append(arrival_times[i - 1] + interarrival_times[i])
-
 
 
 # 4. Calculate service start times and departure times
@@ -64,7 +62,6 @@ for i in range(num_customers):
     departure_times.append(finish_time)
 
 
-
 # 5. Calculate waiting time and time in system
 
 for i in range(num_customers):
@@ -73,7 +70,6 @@ for i in range(num_customers):
 
     total_time = departure_times[i] - arrival_times[i]
     time_in_system.append(total_time)
-
 
 
 # 6. Calculate performace ratings
@@ -92,7 +88,6 @@ utilization = total_busy_time / total_simulation_time
 
 # Throughput - the number of customers served per unit time
 throughput = num_customers / total_simulation_time
-
 
 
 # 7. Print customer results
@@ -116,6 +111,7 @@ for i in range(num_customers):
 
 
 # 8. Print summary results
+
 
 print("\nSummary Performance Measures")
 print("-----------------------------------")
